@@ -1,0 +1,55 @@
+@import 'lib/reveal.css'
+@import 'lib/theme/simple.css'
+@import 'lib/zenburn.css'
+
+blue = #4682b4
+
+.reveal
+  p, ol, ul, li, blockquote
+    line-height 1.25em
+  p, ol, ul, li, blockquote, pre
+    margin-top .75em
+    margin-bottom .75em
+  h1, h2, h3, h4, h5, h6
+    margin-top .25em
+    margin-bottom .75em
+  ul
+    list-style-type circle
+  pre
+    code
+      padding 2em
+      word-wrap normal
+      &::selection,
+      ::selection
+        background-color #000
+        color blue
+      &:focus
+        outline none
+  blockquote
+    border-left .25em solid blue
+    box-shadow none
+    padding 0 1em
+    text-align left
+    &:before,
+    &:after
+      content ''
+  iframe.blocks
+    width 960px
+    height 500px
+    margin-left -30px
+  section
+    img
+      border none
+      box-shadow none
+
+  #title
+    h1, h2, h3, h4, h5, h6
+      text-transform none
+      font-family 'Helvetica Neue', sans-serif
+      font-weight lighter
+      letter-spacing -.05em
+      margin 0
+    h3
+      margin 1.5em 0 1em
+  img.demo
+    max-height 500px

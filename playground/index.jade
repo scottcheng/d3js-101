@@ -1,0 +1,71 @@
+!!!
+html
+  head
+    title D3.js 101 | Test Page
+    meta(charset='utf-8')
+    meta(name='author', content='Scott Cheng')
+    style
+      body {
+        font-family: 'Helvetica Neue', sans-serif;
+        width: 840px;
+        margin: 50px auto;
+      }
+      p {
+        margin: .5em 0;
+      }
+      path {
+        fill: none;
+        stroke: #000;
+        stroke-width: 5;
+      }
+      svg.stacked-radial {
+        font-size: 10px;
+      }
+      svg.stacked-radial path.layer {
+        stroke: none;
+      }
+      svg.stacked-radial .axis line {
+        stroke: #000;
+      }
+      svg.stacked-radial .axis path {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1;
+      }
+      svg.stacked-radial .axis + .axis g text {
+        display: none;
+      }
+  body
+    h1 D3 loaded. Have fun :)
+    script(src='../lib/d3.v3.min.js')
+    script
+      var people = [
+        {
+          name: 'Scott',
+          school: 'Peking University'
+        },
+        {
+          name: 'Chris',
+          school: 'Tsinghua University'
+        },
+        {
+          name: 'Ivy',
+          school: 'Stanford University'
+        },
+        {
+          name: 'Aaron',
+          school: 'Peking University'
+        },
+        {
+          name: 'Bill',
+          school: 'Peking University'
+        },
+        {
+          name: 'Michael',
+          school: 'Stanford University'
+        },
+        {
+          name: 'Diana',
+          school: 'Tsinghua University'
+        }
+      ];

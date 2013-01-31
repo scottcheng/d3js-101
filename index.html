@@ -1,0 +1,257 @@
+<!DOCTYPE html><html><head><title>D3.js 101</title><meta charset="utf-8"><meta name="author" content="Scott Cheng"><meta name="description" content="Introductory D3.js"><link href="style.css" rel="stylesheet"></head><body><div class="reveal"><div class="slides"><section id="title"><h1>D3.js 101</h1><h3>A Technical Intro</h3><p><a href="http://scottcheng.com/" target="_blank">Scott Cheng</a> @ <a href="http://vis.pku.edu.cn/" target="_blank">PKU Vis Group</a></p></section><section id="outline"><h2>Outline</h2><ol><li>What D3 Is</li><li>What D3 Can Do</li><li>How D3 Works</li><li>Hands-On</li></ol></section><section><section id="what-is-d3"><h2>What is <a href="http://d3js.org/" target="_blank">D3.js</a>?</h2><ul><li>Open source JavaScript library for manipulating documents based on data</li><li>Built for data visualization with web technologies (HTML, CSS, JavaScript)</li></ul></section><section id="facts"><h2>Facts</h2><ul><li>D3 = Data-Driven Documents</li><li>Made by <a href="http://bost.ocks.org/mike/" target="_blank">Mike Bostock</a></li><li>Started in 2010</li><li><a href="http://vis.stanford.edu/papers/d3" target="_blank">Paper</a> published in InfoVis 2011</li></ul></section></section><section><section id="demos"><h2>The Power of D3</h2></section><section><p><img src="images/stock.png" class="demo"></p><p><small><a href="http://bl.ocks.org/1256572" target="_blank">http://bl.ocks.org/1256572</a></small></p></section><section><p><img src="images/les-miserables.png" class="demo"></p><p><small><a href="http://bost.ocks.org/mike/miserables/" target="_blank">http://bost.ocks.org/mike/miserables/</a></small></p></section><section><p><img src="images/iris.png" class="demo"></p><p><small><a href="http://mbostock.github.com/d3/talk/20111116/iris-splom.html" target="_blank">http://mbostock.github.com/d3/talk/20111116/iris-splom.html</a></small></p></section><section><p><img src="images/titanic.png" class="demo"></p><p><small><a href="http://www.jasondavies.com/parallel-sets/" target="_blank">http://www.jasondavies.com/parallel-sets/</a></small></p></section><section><p><img src="images/flare-packages.png" class="demo"></p><p><small><a href="http://mbostock.github.com/d3/talk/20111018/treemap.html" target="_blank">http://mbostock.github.com/d3/talk/20111018/treemap.html</a></small></p></section><section><p><img src="images/flights.png" class="demo"></p><p><small><a href="http://mbostock.github.com/d3/talk/20111018/calendar.html" target="_blank">http://mbostock.github.com/d3/talk/20111018/calendar.html</a></small></p></section><section><p><img src="images/unemployment.png" class="demo"></p><p><small><a href="http://mbostock.github.com/d3/talk/20111018/choropleth.html" target="_blank">http://mbostock.github.com/d3/talk/20111018/choropleth.html</a></small></p></section><section><p><img src="images/bj-air.png" class="demo"></p><p><small><a href="http://scottcheng.github.com/bj-air-vis/" target="_blank">http://scottcheng.github.com/bj-air-vis/</a></small></p></section></section><section><section id="how-d3-works"><h2>How D3 Works</h2><p><em>What I wish someone had told me<br>when I was learning D3</em></p></section><section id="data-binding"><h3>Data-DOM Binding</h3><p>Think about visualization &ndash;<br>it's all about binding data to visual elements.</p></section><section id="programming-pattern"><h3>D3 Programming Pattern</h3><pre><code contenteditable spellcheck="false" class="javascript">var dataset = [20, 5, 10, 0, 50];
+
+d3.select('body')
+  .selectAll('p')  // selection
+  .data(dataset)  // data binding
+  .enter()
+    .append('p')  // dom manipulation
+    .attr('class', 'paragraph')  // static property
+    .text(function(d, i) {  // dynamic property
+      return i + ': my value is ' + d;
+    })
+    .style('font-size', function(d) {
+      return (d / 2 + 25) + 'px';  // maps to [25, 50]
+    });</code></pre><p><a href="playground/" target="_blank">Try it here</a></p></section><section id="enter-exit"><h3>Enter &amp; Exit</h3><p>Visual elements <strong>enter</strong> or <strong>exit</strong> the stage</p><pre><code contenteditable spellcheck="false" class="javascript">// update
+var p = d3.select('body')
+  .selectAll('p')
+  .data(newData)
+  .text(function(d) { return d; });
+  
+// enter
+p.enter()
+  .append('p')
+  .text(function(d) { return d + ' is new here'; });
+  
+// exit
+p.exit()
+  .remove();</code></pre></section><section id="scale"><h3>Scale</h3><blockquote>Scales are <strong>functions</strong> that map from an input <strong>domain</strong> to an output <strong>range</strong>.</blockquote><pre><code contenteditable spellcheck="false" class="javascript">var fontSize = d3.scale.linear()
+  .domain([d3.min(dataset), d3.max(dataset)])
+  .range([25, 50]);
+  
+d3.selectAll('p')
+  .style('font-size', function(d) {return fontSize(d) + 'px'});</code></pre></section><section id="transition"><h3>Transition</h3><p>Transition provides the visual cue that<br>resembles how real-world objects change.</p><pre><code contenteditable spellcheck="false" class="javascript">d3.selectAll('p')
+  .transition()
+  .delay(function(d, i) {
+    return i * 50;
+  })
+  .style('padding-left', function() {
+    return Math.random() * 200 + 'px';
+  });</code></pre></section><section id="data-manipulation"><h3>Arrays &amp; Data Manipulation</h3><pre><code contenteditable spellcheck="false" class="javascript">d3.max(array[, accessor]);
+d3.min(array[, accessor]);
+d3.extent(array[, accessor]);
+d3.sum(array[, accessor]);
+d3.mean(array[, accessor]);
+d3.median(array[, accessor]);
+
+d3.range([start, ]stop[, step]);
+
+d3.nest()
+  .key(function(d) { return d.school })
+  .entries(array);  // or `.map(array)`</code></pre></section><section id="svg"><h3>SVG: Scalable Vector Graphic</h3><pre><code id="svg-code" contenteditable spellcheck="false" class="html"></code></pre><svg width="400" height="300"><circle cx="50" cy="100" r="200" fill="steelblue"></circle><circle cx="300" cy="200" r="150" fill="white" stroke="steelblue" stroke-width="5" fill-opacity=".5"></circle></svg></section><section id="svg-generator"><h3>SVG Generators</h3><pre><code contenteditable spellcheck="false" class="javascript">var width = 840, height = 500, padding = 10;
+var x = d3.scale.linear()  // x scale
+  .domain([0, dataset.length - 1])
+  .range([padding, width - padding]);
+var y = d3.scale.linear()  // y scale
+  .domain(d3.extent(dataset))
+  .range([height - padding, padding]);
+var line = d3.svg.line()  // line generator
+  .x(function(d, i) { return x(i); })
+  .y(function(d) { return y(d); });
+d3.select('body')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', height)
+  .append('path')
+  .datum(dataset)
+  .attr('d', line);
+  </code></pre></section></section><section><section id="hands-on"><h2>Hands-On</h2><iframe src="http://bl.ocks.org/d/3048740/" scrolling="no" class="blocks"></iframe><p><small>Based on <a href="http://bl.ocks.org/3048740" target="_blank">http://bl.ocks.org/3048740</a> by Mike Bostock</small></p></section><section id="hands-on-setup"><h3>Setup</h3><pre><code contenteditable spellcheck="false" class="javascript">var width = 840;
+var height = 500;
+var outerRadius = height / 2 - 10;
+var innerRadius = 120;
+
+var svg = d3.select('body').append('svg')
+  .attr('width', width)
+  .attr('height', height)
+  .attr('class', 'stacked-radial')
+  .append('g')
+  .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');</code></pre></section><section id="hands-on-ajax"><h3>Fetch Data With AJAX</h3><pre><code contenteditable spellcheck="false" class="javascript">d3.csv('data.csv', function(data) {
+  // play with `data`
+});</code></pre></section><section id="hands-on-data"><h3>Data Preprocessing</h3><pre><code contenteditable spellcheck="false" class="javascript">// turn strings into numbers
+data.forEach(function(d) {
+  d.time = +d.time;
+  d.value = +d.value;
+});
+
+// nest operator
+var nest = d3.nest()
+  .key(function(d) { return d.key; });
+  
+// stack operator
+var stack = d3.layout.stack()
+  .offset('zero')  // stack from a baseline
+  .values(function(d) { return d.values; })
+  .x(function(d) { return d.time; })
+  .y(function(d) { return d.value; });
+  
+var layers = stack(nest.entries(data));</code></pre></section><section id="hands-on-chart"><h3>Stacked Radial Area Chart</h3><pre><code contenteditable spellcheck="false" class="javascript">// [0, 7] -> [0, 2π]
+var angle = d3.time.scale()
+  .domain([0, d3.max(data, function(d) {
+    return d.time + 1;
+  })])
+  .range([0, 2 * Math.PI]);
+  
+// value -> radius
+var radius = d3.scale.linear()
+  .domain([0, d3.max(data, function(d) {
+    return d.y0 + d.y;
+  })])
+  .range([innerRadius, outerRadius]);
+  
+// ordinal scale of 20 colors
+var color = d3.scale.category20c();
+
+// area generator
+var area = d3.svg.area.radial()
+  .interpolate('cardinal-closed')
+  .angle(function(d) { return angle(d.time); })
+  .innerRadius(function(d) { return radius(d.y0); })
+  .outerRadius(function(d) { return radius(d.y0 + d.y); });
+  
+svg.selectAll('.layer')
+  .data(layers)
+  .enter().append('path')
+    .attr('class', 'layer')
+    .attr('d', function(d) { return area(d.values); })
+    .style('fill', function(d, i) { return color(i); });</code></pre></section><section id="hands-on-axes"><h3>Axes</h3><pre><code contenteditable spellcheck="false" class="javascript">// date -> weekday name
+var formatDate = d3.time.format('%a');
+// day -> weekday name
+var formatDay = function(d) {
+  return formatDate(new Date(2007, 0, d));
+};
+
+svg.selectAll('.axis')
+  .data(d3.range(
+    d3.max(data, function(d) { return d.time; }) - 
+    d3.min(data, function(d) { return d.time; }) + 1))
+  .enter().append('g')
+    .attr('class', 'axis')
+    .attr('transform', function(d) {
+      return 'rotate(' + angle(d) * 180 / Math.PI + ')';
+    })
+    .call(d3.svg.axis()
+      .scale(radius.copy().range([-innerRadius, -outerRadius]))
+      .orient('left'))
+    .append('text')  // weekdays
+      .attr('y', -innerRadius + 6)
+      .attr('dy', '.71em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) { return formatDay(d); });</code></pre></section><section id="hands-on-full"><h3>Full, Runnable Code</h3><pre><code contenteditable spellcheck="false" class="javascript">var width = 840;
+var height = 500;
+var outerRadius = height / 2 - 10;
+var innerRadius = 120;
+
+var svg = d3.select('body').append('svg')
+  .attr('width', width)
+  .attr('height', height)
+  .attr('class', 'stacked-radial')
+  .append('g')
+  .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+  
+d3.csv('data.csv', function(data) {
+  // data preprocessing
+  
+  // turn strings into numbers
+  data.forEach(function(d) {
+    d.time = +d.time;
+    d.value = +d.value;
+  });
+  
+  // nest operator
+  var nest = d3.nest()
+    .key(function(d) { return d.key; });
+    
+  // stack operator
+  var stack = d3.layout.stack()
+    .offset('zero')  // stack from a baseline
+    .values(function(d) { return d.values; })
+    .x(function(d) { return d.time; })
+    .y(function(d) { return d.value; });
+    
+  var layers = stack(nest.entries(data));
+  
+  
+  // draw stacked radial area chart
+  
+  // [0, 7] -> [0, 2π]
+  var angle = d3.time.scale()
+    .domain([0, d3.max(data, function(d) {
+      return d.time + 1;
+    })])
+    .range([0, 2 * Math.PI]);
+    
+  // value -> radius
+  var radius = d3.scale.linear()
+    .domain([0, d3.max(data, function(d) {
+      return d.y0 + d.y;
+    })])
+    .range([innerRadius, outerRadius]);
+    
+  // ordinal scale of 20 colors
+  var color = d3.scale.category20c();
+  
+  // area generator
+  var area = d3.svg.area.radial()
+    .interpolate('cardinal-closed')
+    .angle(function(d) { return angle(d.time); })
+    .innerRadius(function(d) { return radius(d.y0); })
+    .outerRadius(function(d) { return radius(d.y0 + d.y); });
+    
+  svg.selectAll('.layer')
+    .data(layers)
+    .enter().append('path')
+      .attr('class', 'layer')
+      .attr('d', function(d) { return area(d.values); })
+      .style('fill', function(d, i) { return color(i); });
+      
+      
+  // draw axes
+  
+  // date -> weekday name
+  var formatDate = d3.time.format('%a');
+  // day -> weekday name
+  var formatDay = function(d) {
+    return formatDate(new Date(2007, 0, d));
+  };
+  
+  svg.selectAll('.axis')
+    .data(d3.range(
+      d3.max(data, function(d) { return d.time; }) - 
+      d3.min(data, function(d) { return d.time; }) + 1))
+    .enter().append('g')
+      .attr('class', 'axis')
+      .attr('transform', function(d) {
+        return 'rotate(' + angle(d) * 180 / Math.PI + ')';
+      })
+      .call(d3.svg.axis()
+        .scale(radius.copy().range([-innerRadius, -outerRadius]))
+        .orient('left'))
+      .append('text')  // weekdays
+        .attr('y', -innerRadius + 6)
+        .attr('dy', '.71em')
+        .attr('text-anchor', 'middle')
+        .text(function(d) { return formatDay(d); });
+});</code></pre><p><a href="playground/" target="_blank">Try it here</a></p></section></section><section id="resources"><h2>Resources</h2><p><a href="http://d3js.org/" target="_blank">D3.js Website</a></p><p><a href="https://github.com/mbostock/d3/wiki/Gallery" target="_blank">Gallery</a></p><p><a href="https://github.com/mbostock/d3/wiki/Tutorials" target="_blank">Tutorials</a></p><p><a href="https://github.com/mbostock/d3/wiki/API-Reference" target="_blank">API Reference</a></p><p><a href="https://github.com/mbostock/d3" target="_blank">GitHub Project</a></p></section><section id="end"><h1>Thank You</h1><h2>Questions?</h2></section></div></div><script src="lib/head.min.js"></script><script src="lib/reveal.min.js"></script><script>Reveal.initialize({
+  history: true,
+  rollingLinks: false,
+  dependencies: [
+    {
+      src: 'lib/highlight.js',
+      async: true,
+      callback: function() {
+        hljs.initHighlightingOnLoad();
+      }
+    }
+  ]
+});</script><script src="lib/d3.v3.min.js"></script><script>var code = '<svg width="400" height="300">\n  <circle cx="50" cy="100" r="200" fill="steelblue" />\n  <circle cx="300" cy="200" r="150" fill="white"\n    stroke="steelblue" stroke-width="5" fill-opacity=".5" />\n</svg>'
+d3.select('code#svg-code')
+  .text(code);</script></body></html>

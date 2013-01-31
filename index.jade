@@ -1,0 +1,429 @@
+!!!
+html
+  head
+    title D3.js 101
+    meta(charset='utf-8')
+    meta(name='author', content='Scott Cheng')
+    meta(name='description', content='Introductory D3.js')
+    link(href='style.css', rel='stylesheet')
+  body
+    .reveal
+      .slides
+        section#title
+          h1 D3.js 101
+          h3 A Technical Intro
+          p
+            a(href='http://scottcheng.com/', target='_blank') Scott Cheng
+            |  @ 
+            a(href='http://vis.pku.edu.cn/', target='_blank') PKU Vis Group
+
+        section#outline
+          h2 Outline
+          ol
+            li What D3 Is
+            li What D3 Can Do
+            li How D3 Works
+            li Hands-On
+
+        section
+          section#what-is-d3
+            h2
+              | What is 
+              a(href='http://d3js.org/', target='_blank') D3.js
+              | ?
+            ul
+              li Open source JavaScript library for manipulating documents based on data
+              li Built for data visualization with web technologies (HTML, CSS, JavaScript)
+          section#facts
+            h2 Facts
+            ul
+              li D3 = Data-Driven Documents
+              li
+                | Made by 
+                a(href='http://bost.ocks.org/mike/', target='_blank') Mike Bostock
+              li Started in 2010
+              li
+                a(href='http://vis.stanford.edu/papers/d3', target='_blank') Paper
+                |  published in InfoVis 2011
+
+        section
+          section#demos
+            h2 The Power of D3
+          each demo in [{url: 'http://bl.ocks.org/1256572', scrshot: 'stock.png'}, {url: 'http://bost.ocks.org/mike/miserables/', scrshot: 'les-miserables.png'}, {url: 'http://mbostock.github.com/d3/talk/20111116/iris-splom.html', scrshot: 'iris.png'}, {url: 'http://www.jasondavies.com/parallel-sets/', scrshot: 'titanic.png'}, {url: 'http://mbostock.github.com/d3/talk/20111018/treemap.html', scrshot: 'flare-packages.png'}, {url: 'http://mbostock.github.com/d3/talk/20111018/calendar.html', scrshot: 'flights.png'}, {url: 'http://mbostock.github.com/d3/talk/20111018/choropleth.html', scrshot: 'unemployment.png'}, {url: 'http://scottcheng.github.com/bj-air-vis/', scrshot: 'bj-air.png'}]
+            section
+              p: img.demo(src='images/#{demo.scrshot}')
+              p: small: a(href=demo.url, target='_blank')= demo.url
+
+        section
+          section#how-d3-works
+            h2 How D3 Works
+            p: em
+              | What I wish someone had told me
+              br
+              | when I was learning D3
+          section#data-binding
+            h3 Data-DOM Binding
+            p
+              | Think about visualization &ndash;
+              br
+              | it's all about binding data to visual elements.
+          section#programming-pattern
+            h3 D3 Programming Pattern
+            pre: code.javascript(contenteditable, spellcheck='false').
+              var dataset = [20, 5, 10, 0, 50];
+
+              d3.select('body')
+                .selectAll('p')  // selection
+                .data(dataset)  // data binding
+                .enter()
+                  .append('p')  // dom manipulation
+                  .attr('class', 'paragraph')  // static property
+                  .text(function(d, i) {  // dynamic property
+                    return i + ': my value is ' + d;
+                  })
+                  .style('font-size', function(d) {
+                    return (d / 2 + 25) + 'px';  // maps to [25, 50]
+                  });
+            p: a(href='playground/', target='_blank') Try it here
+          section#enter-exit
+            h3 Enter &amp; Exit
+            p
+              | Visual elements 
+              strong enter
+              |  or 
+              strong exit
+              |  the stage
+            pre: code.javascript(contenteditable, spellcheck='false').
+              // update
+              var p = d3.select('body')
+                .selectAll('p')
+                .data(newData)
+                .text(function(d) { return d; });
+
+              // enter
+              p.enter()
+                .append('p')
+                .text(function(d) { return d + ' is new here'; });
+
+              // exit
+              p.exit()
+                .remove();
+          section#scale
+            h3 Scale
+            blockquote
+              | Scales are 
+              strong functions
+              |  that map from an input 
+              strong domain
+              |  to an output 
+              strong range
+              | .
+            pre: code.javascript(contenteditable, spellcheck='false').
+              var fontSize = d3.scale.linear()
+                .domain([d3.min(dataset), d3.max(dataset)])
+                .range([25, 50]);
+
+              d3.selectAll('p')
+                .style('font-size', function(d) {return fontSize(d) + 'px'});
+          section#transition
+            h3 Transition
+            p
+              | Transition provides the visual cue that
+              br
+              | resembles how real-world objects change.
+            pre: code.javascript(contenteditable, spellcheck='false').
+              d3.selectAll('p')
+                .transition()
+                .delay(function(d, i) {
+                  return i * 50;
+                })
+                .style('padding-left', function() {
+                  return Math.random() * 200 + 'px';
+                });
+          section#data-manipulation
+            h3 Arrays &amp; Data Manipulation
+            pre: code.javascript(contenteditable, spellcheck='false').
+              d3.max(array[, accessor]);
+              d3.min(array[, accessor]);
+              d3.extent(array[, accessor]);
+              d3.sum(array[, accessor]);
+              d3.mean(array[, accessor]);
+              d3.median(array[, accessor]);
+
+              d3.range([start, ]stop[, step]);
+
+              d3.nest()
+                .key(function(d) { return d.school })
+                .entries(array);  // or `.map(array)`
+          section#svg
+            h3 SVG: Scalable Vector Graphic
+            pre: code#svg-code.html(contenteditable, spellcheck='false')
+            svg(width='400',height='300')
+              circle(cx='50', cy='100', r='200', fill='steelblue')
+              circle(cx='300', cy='200', r='150', fill='white', stroke='steelblue', stroke-width='5', fill-opacity='.5')
+          section#svg-generator
+            h3 SVG Generators
+            pre: code.javascript(contenteditable, spellcheck='false').
+              var width = 840, height = 500, padding = 10;
+              var x = d3.scale.linear()  // x scale
+                .domain([0, dataset.length - 1])
+                .range([padding, width - padding]);
+              var y = d3.scale.linear()  // y scale
+                .domain(d3.extent(dataset))
+                .range([height - padding, padding]);
+              var line = d3.svg.line()  // line generator
+                .x(function(d, i) { return x(i); })
+                .y(function(d) { return y(d); });
+              d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('path')
+                .datum(dataset)
+                .attr('d', line);
+
+        section
+          section#hands-on
+            h2 Hands-On
+            iframe.blocks(src='http://bl.ocks.org/d/3048740/', scrolling='no')
+            p: small
+              | Based on 
+              a(href='http://bl.ocks.org/3048740', target='_blank') http://bl.ocks.org/3048740
+              |  by Mike Bostock
+          section#hands-on-setup
+            h3 Setup
+            pre: code.javascript(contenteditable, spellcheck='false').
+              var width = 840;
+              var height = 500;
+              var outerRadius = height / 2 - 10;
+              var innerRadius = 120;
+
+              var svg = d3.select('body').append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .attr('class', 'stacked-radial')
+                .append('g')
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+          section#hands-on-ajax
+            h3 Fetch Data With AJAX
+            pre: code.javascript(contenteditable, spellcheck='false').
+              d3.csv('data.csv', function(data) {
+                // play with `data`
+              });
+          section#hands-on-data
+            h3 Data Preprocessing
+            pre: code.javascript(contenteditable, spellcheck='false').
+              // turn strings into numbers
+              data.forEach(function(d) {
+                d.time = +d.time;
+                d.value = +d.value;
+              });
+
+              // nest operator
+              var nest = d3.nest()
+                .key(function(d) { return d.key; });
+
+              // stack operator
+              var stack = d3.layout.stack()
+                .offset('zero')  // stack from a baseline
+                .values(function(d) { return d.values; })
+                .x(function(d) { return d.time; })
+                .y(function(d) { return d.value; });
+
+              var layers = stack(nest.entries(data));
+          section#hands-on-chart
+            h3 Stacked Radial Area Chart
+            pre: code.javascript(contenteditable, spellcheck='false').
+              // [0, 7] -> [0, 2π]
+              var angle = d3.time.scale()
+                .domain([0, d3.max(data, function(d) {
+                  return d.time + 1;
+                })])
+                .range([0, 2 * Math.PI]);
+
+              // value -> radius
+              var radius = d3.scale.linear()
+                .domain([0, d3.max(data, function(d) {
+                  return d.y0 + d.y;
+                })])
+                .range([innerRadius, outerRadius]);
+
+              // ordinal scale of 20 colors
+              var color = d3.scale.category20c();
+
+              // area generator
+              var area = d3.svg.area.radial()
+                .interpolate('cardinal-closed')
+                .angle(function(d) { return angle(d.time); })
+                .innerRadius(function(d) { return radius(d.y0); })
+                .outerRadius(function(d) { return radius(d.y0 + d.y); });
+
+              svg.selectAll('.layer')
+                .data(layers)
+                .enter().append('path')
+                  .attr('class', 'layer')
+                  .attr('d', function(d) { return area(d.values); })
+                  .style('fill', function(d, i) { return color(i); });
+          section#hands-on-axes
+            h3 Axes
+            pre: code.javascript(contenteditable, spellcheck='false').
+              // date -> weekday name
+              var formatDate = d3.time.format('%a');
+              // day -> weekday name
+              var formatDay = function(d) {
+                return formatDate(new Date(2007, 0, d));
+              };
+
+              svg.selectAll('.axis')
+                .data(d3.range(
+                  d3.max(data, function(d) { return d.time; }) - 
+                  d3.min(data, function(d) { return d.time; }) + 1))
+                .enter().append('g')
+                  .attr('class', 'axis')
+                  .attr('transform', function(d) {
+                    return 'rotate(' + angle(d) * 180 / Math.PI + ')';
+                  })
+                  .call(d3.svg.axis()
+                    .scale(radius.copy().range([-innerRadius, -outerRadius]))
+                    .orient('left'))
+                  .append('text')  // weekdays
+                    .attr('y', -innerRadius + 6)
+                    .attr('dy', '.71em')
+                    .attr('text-anchor', 'middle')
+                    .text(function(d) { return formatDay(d); });
+          //- section#hands-on-interaction  TODO
+            h3 Interaction
+          section#hands-on-full
+            h3 Full, Runnable Code
+            pre: code.javascript(contenteditable, spellcheck='false').
+              var width = 840;
+              var height = 500;
+              var outerRadius = height / 2 - 10;
+              var innerRadius = 120;
+
+              var svg = d3.select('body').append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .attr('class', 'stacked-radial')
+                .append('g')
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+              d3.csv('data.csv', function(data) {
+                // data preprocessing
+
+                // turn strings into numbers
+                data.forEach(function(d) {
+                  d.time = +d.time;
+                  d.value = +d.value;
+                });
+
+                // nest operator
+                var nest = d3.nest()
+                  .key(function(d) { return d.key; });
+
+                // stack operator
+                var stack = d3.layout.stack()
+                  .offset('zero')  // stack from a baseline
+                  .values(function(d) { return d.values; })
+                  .x(function(d) { return d.time; })
+                  .y(function(d) { return d.value; });
+
+                var layers = stack(nest.entries(data));
+
+
+                // draw stacked radial area chart
+
+                // [0, 7] -> [0, 2π]
+                var angle = d3.time.scale()
+                  .domain([0, d3.max(data, function(d) {
+                    return d.time + 1;
+                  })])
+                  .range([0, 2 * Math.PI]);
+
+                // value -> radius
+                var radius = d3.scale.linear()
+                  .domain([0, d3.max(data, function(d) {
+                    return d.y0 + d.y;
+                  })])
+                  .range([innerRadius, outerRadius]);
+
+                // ordinal scale of 20 colors
+                var color = d3.scale.category20c();
+
+                // area generator
+                var area = d3.svg.area.radial()
+                  .interpolate('cardinal-closed')
+                  .angle(function(d) { return angle(d.time); })
+                  .innerRadius(function(d) { return radius(d.y0); })
+                  .outerRadius(function(d) { return radius(d.y0 + d.y); });
+
+                svg.selectAll('.layer')
+                  .data(layers)
+                  .enter().append('path')
+                    .attr('class', 'layer')
+                    .attr('d', function(d) { return area(d.values); })
+                    .style('fill', function(d, i) { return color(i); });
+
+
+                // draw axes
+
+                // date -> weekday name
+                var formatDate = d3.time.format('%a');
+                // day -> weekday name
+                var formatDay = function(d) {
+                  return formatDate(new Date(2007, 0, d));
+                };
+
+                svg.selectAll('.axis')
+                  .data(d3.range(
+                    d3.max(data, function(d) { return d.time; }) - 
+                    d3.min(data, function(d) { return d.time; }) + 1))
+                  .enter().append('g')
+                    .attr('class', 'axis')
+                    .attr('transform', function(d) {
+                      return 'rotate(' + angle(d) * 180 / Math.PI + ')';
+                    })
+                    .call(d3.svg.axis()
+                      .scale(radius.copy().range([-innerRadius, -outerRadius]))
+                      .orient('left'))
+                    .append('text')  // weekdays
+                      .attr('y', -innerRadius + 6)
+                      .attr('dy', '.71em')
+                      .attr('text-anchor', 'middle')
+                      .text(function(d) { return formatDay(d); });
+              });
+            p: a(href='playground/', target='_blank') Try it here
+
+        section#resources
+          h2 Resources
+          p: a(href='http://d3js.org/', target='_blank') D3.js Website
+          p: a(href='https://github.com/mbostock/d3/wiki/Gallery', target='_blank') Gallery
+          p: a(href='https://github.com/mbostock/d3/wiki/Tutorials', target='_blank') Tutorials
+          p: a(href='https://github.com/mbostock/d3/wiki/API-Reference', target='_blank') API Reference
+          p: a(href='https://github.com/mbostock/d3', target='_blank') GitHub Project
+
+        section#end
+          h1 Thank You
+          h2 Questions?
+
+    script(src='lib/head.min.js')
+    script(src='lib/reveal.min.js')
+    script
+      Reveal.initialize({
+        history: true,
+        rollingLinks: false,
+        dependencies: [
+          {
+            src: 'lib/highlight.js',
+            async: true,
+            callback: function() {
+              hljs.initHighlightingOnLoad();
+            }
+          }
+        ]
+      });
+    script(src='lib/d3.v3.min.js')
+    script
+      var code = '<svg width="400" height="300">\n  <circle cx="50" cy="100" r="200" fill="steelblue" />\n  <circle cx="300" cy="200" r="150" fill="white"\n    stroke="steelblue" stroke-width="5" fill-opacity=".5" />\n</svg>'
+      d3.select('code#svg-code')
+        .text(code);

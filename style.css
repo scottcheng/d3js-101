@@ -1,0 +1,17 @@
+@import 'lib/reveal.css';
+@import 'lib/theme/simple.css';
+@import 'lib/zenburn.css';
+.reveal p,.reveal ol,.reveal ul,.reveal li,.reveal blockquote{line-height:1.25em}
+.reveal p,.reveal ol,.reveal ul,.reveal li,.reveal blockquote,.reveal pre{margin-top:.75em;margin-bottom:.75em}
+.reveal h1,.reveal h2,.reveal h3,.reveal h4,.reveal h5,.reveal h6{margin-top:.25em;margin-bottom:.75em}
+.reveal ul{list-style-type:circle}
+.reveal pre code{padding:2em;word-wrap:normal;}
+.reveal pre code::selection,.reveal pre code ::selection{background-color:#000;color:#4682b4}
+.reveal pre code:focus{outline:none}
+.reveal blockquote{border-left:.25em solid #4682b4;box-shadow:none;padding:0 1em;text-align:left;}
+.reveal blockquote:before,.reveal blockquote:after{content:''}
+.reveal iframe.blocks{width:960px;height:500px;margin-left:-30px}
+.reveal section img{border:none;box-shadow:none}
+.reveal #title h1,.reveal #title h2,.reveal #title h3,.reveal #title h4,.reveal #title h5,.reveal #title h6{text-transform:none;font-family:'Helvetica Neue',sans-serif;font-weight:lighter;letter-spacing:-.05em;margin:0}
+.reveal #title h3{margin:1.5em 0 1em}
+.reveal img.demo{max-height:500px}
