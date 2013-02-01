@@ -122,7 +122,9 @@ html
                 .range([25, 50]);
 
               d3.selectAll('p')
-                .style('font-size', function(d) {return fontSize(d) + 'px'});
+                .style('font-size', function(d) {
+                  return fontSize(d) + 'px';
+                });
           section#transition
             h3 Transition
             p
@@ -132,12 +134,12 @@ html
             pre: code.javascript(contenteditable, spellcheck='false').
               d3.selectAll('p')
                 .transition()
-                .delay(function(d, i) {
-                  return i * 50;
-                })
-                .style('padding-left', function() {
-                  return Math.random() * 200 + 'px';
-                });
+                  .delay(function(d, i) {
+                    return i * 50;
+                  })
+                  .style('padding-left', function() {
+                    return Math.random() * 200 + 'px';
+                  });
           section#data-manipulation
             h3 Arrays &amp; Data Manipulation
             pre: code.javascript(contenteditable, spellcheck='false').
