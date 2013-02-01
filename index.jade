@@ -291,8 +291,33 @@ html
                     .attr('dy', '.71em')
                     .attr('text-anchor', 'middle')
                     .text(function(d) { return formatDay(d); });
-          //- section#hands-on-interaction  TODO
+          section#hands-on-interaction
             h3 Interaction
+            pre: code.javascript(contenteditable, spellcheck='false').
+              var selected = [];  // ui state
+              layers.forEach(function() { selected.push(false); });  // initialize state
+
+              // add mouse click listener
+              svg.selectAll('.layer')
+                .on('click', function(d, i) {
+                  selected[i] = !selected[i];
+                  render();
+                });
+
+              // render current state
+              var render = function() {
+                svg.selectAll('.layer')
+                  .transition()
+                    .style('fill', function(d, i) {
+                      if (d3.max(selected)) {
+                        // something is selected
+                        return selected[i] ? color(i) : '#eee';
+                      } else {
+                        // nothing is selected
+                        return color(i);
+                      }
+                    });
+              };
           section#hands-on-full
             h3 Full, Runnable Code
             pre: code.javascript(contenteditable, spellcheck='false').
@@ -391,6 +416,34 @@ html
                       .attr('dy', '.71em')
                       .attr('text-anchor', 'middle')
                       .text(function(d) { return formatDay(d); });
+
+
+                // interaction
+
+                var selected = [];  // ui state
+                layers.forEach(function() { selected.push(false); });  // initialize state
+
+                // add mouse click listener
+                svg.selectAll('.layer')
+                  .on('click', function(d, i) {
+                    selected[i] = !selected[i];
+                    render();
+                  });
+
+                // render current state
+                var render = function() {
+                  svg.selectAll('.layer')
+                    .transition()
+                      .style('fill', function(d, i) {
+                        if (d3.max(selected)) {
+                          // something is selected
+                          return selected[i] ? color(i) : '#eee';
+                        } else {
+                          // nothing is selected
+                          return color(i);
+                        }
+                      });
+                };
               });
             p: a(href='playground/', target='_blank') Try it here
 

@@ -145,7 +145,30 @@ svg.selectAll('.axis')
       .attr('y', -innerRadius + 6)
       .attr('dy', '.71em')
       .attr('text-anchor', 'middle')
-      .text(function(d) { return formatDay(d); });</code></pre></section><section id="hands-on-full"><h3>Full, Runnable Code</h3><pre><code contenteditable spellcheck="false" class="javascript">var width = 840;
+      .text(function(d) { return formatDay(d); });</code></pre></section><section id="hands-on-interaction"><h3>Interaction</h3><pre><code contenteditable spellcheck="false" class="javascript">var selected = [];  // ui state
+layers.forEach(function() { selected.push(false); });  // initialize state
+
+// add mouse click listener
+svg.selectAll('.layer')
+  .on('click', function(d, i) {
+    selected[i] = !selected[i];
+    render();
+  });
+  
+// render current state
+var render = function() {
+  svg.selectAll('.layer')
+    .transition()
+      .style('fill', function(d, i) {
+        if (d3.max(selected)) {
+          // something is selected
+          return selected[i] ? color(i) : '#eee';
+        } else {
+          // nothing is selected
+          return color(i);
+        }
+      });
+};</code></pre></section><section id="hands-on-full"><h3>Full, Runnable Code</h3><pre><code contenteditable spellcheck="false" class="javascript">var width = 840;
 var height = 500;
 var outerRadius = height / 2 - 10;
 var innerRadius = 120;
@@ -240,6 +263,34 @@ d3.csv('data.csv', function(data) {
         .attr('dy', '.71em')
         .attr('text-anchor', 'middle')
         .text(function(d) { return formatDay(d); });
+        
+        
+  // interaction
+  
+  var selected = [];  // ui state
+  layers.forEach(function() { selected.push(false); });  // initialize state
+  
+  // add mouse click listener
+  svg.selectAll('.layer')
+    .on('click', function(d, i) {
+      selected[i] = !selected[i];
+      render();
+    });
+    
+  // render current state
+  var render = function() {
+    svg.selectAll('.layer')
+      .transition()
+        .style('fill', function(d, i) {
+          if (d3.max(selected)) {
+            // something is selected
+            return selected[i] ? color(i) : '#eee';
+          } else {
+            // nothing is selected
+            return color(i);
+          }
+        });
+  };
 });</code></pre><p><a href="playground/" target="_blank">Try it here</a></p></section></section><section id="resources"><h2>Resources</h2><p><a href="http://d3js.org/" target="_blank">D3.js Website</a></p><p><a href="https://github.com/mbostock/d3/wiki/Gallery" target="_blank">Gallery</a></p><p><a href="https://github.com/mbostock/d3/wiki/Tutorials" target="_blank">Tutorials</a></p><p><a href="https://github.com/mbostock/d3/wiki/API-Reference" target="_blank">API Reference</a></p><p><a href="https://github.com/mbostock/d3" target="_blank">GitHub Project</a></p></section><section id="end"><h1>Thank You</h1><h2>Questions?</h2></section></div></div><script src="lib/head.min.js"></script><script src="lib/reveal.min.js"></script><script>Reveal.initialize({
   history: true,
   rollingLinks: false,
