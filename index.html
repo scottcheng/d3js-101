@@ -11,19 +11,19 @@ d3.select('body')
     })
     .style('font-size', function(d) {
       return (d / 2 + 25) + 'px';  // maps to [25, 50]
-    });</code></pre><p><a href="playground/" target="_blank">Try it here</a></p></section><section id="enter-exit"><h3>Enter &amp; Exit</h3><p>Visual elements <strong>enter</strong> or <strong>exit</strong> the stage</p><pre><code contenteditable spellcheck="false" class="javascript">// update
+    });</code></pre><p><a href="playground/" target="_blank">Try it here</a></p></section><section id="enter-exit"><h3>Update, Enter &amp; Exit</h3><p>Visual elements <strong>enter</strong> or <strong>exit</strong> the stage</p><pre><code contenteditable spellcheck="false" class="javascript">// update
 var p = d3.select('body')
   .selectAll('p')
-  .data(newData)
-  .text(function(d) { return d; });
+  .data(newData)  // elements that already are on the stage
+  .text(function(d) { return d + ' has been here all along'; });
   
 // enter
-p.enter()
+p.enter()  // elements that are about to enter the stage
   .append('p')
   .text(function(d) { return d + ' is new here'; });
   
 // exit
-p.exit()
+p.exit()  // elements that are about to exit the stage
   .remove();</code></pre></section><section id="scale"><h3>Scale</h3><blockquote>Scales are <strong>functions</strong> that map from an input <strong>domain</strong> to an output <strong>range</strong>.</blockquote><pre><code contenteditable spellcheck="false" class="javascript">var fontSize = d3.scale.linear()
   .domain([d3.min(dataset), d3.max(dataset)])
   .range([25, 50]);

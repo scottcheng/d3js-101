@@ -85,7 +85,7 @@ html
                   });
             p: a(href='playground/', target='_blank') Try it here
           section#enter-exit
-            h3 Enter &amp; Exit
+            h3 Update, Enter &amp; Exit
             p
               | Visual elements 
               strong enter
@@ -96,16 +96,16 @@ html
               // update
               var p = d3.select('body')
                 .selectAll('p')
-                .data(newData)
-                .text(function(d) { return d; });
+                .data(newData)  // elements that already are on the stage
+                .text(function(d) { return d + ' has been here all along'; });
 
               // enter
-              p.enter()
+              p.enter()  // elements that are about to enter the stage
                 .append('p')
                 .text(function(d) { return d + ' is new here'; });
 
               // exit
-              p.exit()
+              p.exit()  // elements that are about to exit the stage
                 .remove();
           section#scale
             h3 Scale
